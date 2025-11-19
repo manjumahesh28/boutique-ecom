@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Checkout</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        
+        <!-- Order Summary -->
+        <div class="col-md-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">Order Summary</h3>
+                    <ul class="list-group mb-3">
+                        {% for item in items %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>{{ item.product.name }} x {{ item.quantity }}</span>
+                            <strong>${{ item.subtotal|floatformat:2 }}</strong>
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <h4>Total: <span class="text-success">${{ total|floatformat:2 }}</span></h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Address + Place Order -->
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">Addresses</h3>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Shipping Address</label>
+                            <textarea name="shipping_address" class="form-control" rows="3" r_

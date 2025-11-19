@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Order Confirmation{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Order Confirmed!</h1>
+    <div class="alert alert-success">
+        <h4>Thank you for your purchase!</h4>
+        <p>Order ID: #{{ order.id }}</p>
+        <p>Total: ${{ order.total|floatformat:2 }}</p>
+        <p>Status: {{ order.get_status_display }}</p>
+        <p>Created: {{ order.created|date:"M d, Y H:i" }}</p>
+    </div>
+
+    <h3>Order Details</h3>
+    <div class="row">
+        {% for item in order.items.all %}
+        <div class="col-md-12 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5>{{ item.product.name }}</h5>
+                    <p>
+                        Quantity: {{ item.quantity }} |
+                        Price: ${{ item.price|floatformat:2 }} |
+                        Subtotal: ${{ item.subtotal|floatformat:2 }}
+                    </p>
+                    {% if item.product.image %}
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}"
+                             style="width: 50px; height: 50px;">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'orders:order_list' %}" class="btn btn-primary me-2">View Orders</a>
+    <a href="{% url 'product_list' %}" class="btn btn-secondary">Continue Shopping</a>
+</div>
+{% endblock %}

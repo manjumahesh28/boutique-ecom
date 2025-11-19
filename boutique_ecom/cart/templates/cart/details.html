@@ -1,0 +1,73 @@
+     {% extends 'base.html' %}
+     {% load static %}
+     {% block title %}Shopping Cart{% endblock %}
+
+     {% block content %}
+     <h1>Cart Page Loaded Successfully!</h1>
+     <p>Items: {{ items|length|default:0 }}</p>
+     <p>Total: ${{ total|default:0|floatformat:2 }}</p>
+     {% if messages %}
+         {% for message in messages %}
+             <p>{{ message }}</p>
+         {% endfor %}
+     {% endif %}
+     {% endblock %}
+     
+     <div class="container mt-4">
+         <h1>Your Shopping Cart</h1>
+         
+         <!-- Messages (e.g., "Cart created" or "Item added") -->
+         {% if messages %}
+             {% for message in messages %}
+                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                     {{ message }}
+                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                 </div>
+             {% endfor %}
+         {% endif %}
+         
+         <!-- Cart Items -->
+         {% if items %}
+             <div class="row">
+                 {% for item in items %}
+                 <div class="col-md-12 mb-3">
+                     <div class="card">
+                         <div class="card-body d-flex justify-content-between align-items-center">
+                             <div>
+                                 <h5 class="card-title">{{ item.product.name }}</h5>
+                                 <p class="card-text">
+                                     Price: ${{ item.product.price|floatformat:2 }} | 
+                                     Quantity: {{ item.quantity }} | 
+                                     Subtotal: ${{ item.subtotal|floatformat:2 }}
+                                 </p>
+                                 {% if item.product.image %}
+                                     <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 50px; height: 50px; object-fit: cover;">
+                                 {% endif %}
+                             </div>
+                             <div>
+                                 <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger btn-sm">Remove</a>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+                 {% endfor %}
+             </div>
+             
+             <!-- Total and Checkout -->
+             <div class="row mt-3">
+                 <div class="col-md-12 text-end">
+                     <h3>Total: ${{ total|floatformat:2 }}</h3>
+                     <a href="{% url 'create_order' %}" class="btn btn-success me-2">Proceed to Checkout</a>
+                     <a href="{% url 'product_list' %}" class="btn btn-secondary">Continue Shopping</a>
+                 </div>
+             </div>
+         {% else %}
+             <div class="alert alert-info">
+                 <h4>Your cart is empty.</h4>
+                 <p><a href="{% url 'product_list' %}" class="alert-link">Start shopping now!</a></p>
+             </div>
+         {% endif %}
+     </div>
+     {% endblock %}
+
+     
